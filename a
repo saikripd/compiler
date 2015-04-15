@@ -1,0 +1,7 @@
+mkdir -p bin
+cd bin; \
+	lex ../src/dlex.l; \
+	yacc -d -v ../src/dyacc.y;\
+	gcc -c -g y.tab.c lex.yy.c ../src/definition.c;\
+	gcc -o parser y.tab.o lex.yy.o definition.o;\
+

@@ -1,0 +1,4934 @@
+   0  $accept : Declarations $end
+
+   1  Declarations : Declaration
+   2               | Declarations Declaration
+
+   3  IdentifierWithoutDot : IDENTIFIER
+   4                       | IDENTIFIER ArrayDeclarator
+   5                       | '*' IDENTIFIER
+
+   6  Identifier : IdentifierWithoutDot
+   7             | IdentifierWithoutDot '.' Identifier
+
+   8  Type : Type1
+   9       | Type1 ArrayDeclarator
+
+  10  Type1 : BOOL
+  11        | BYTE
+  12        | UBYTE
+  13        | SHORT
+  14        | USHORT
+  15        | INT
+  16        | UINT
+  17        | LONG
+  18        | ULONG
+  19        | CHAR
+  20        | FLOAT
+  21        | DOUBLE
+  22        | VOID
+
+  23  ArrayDeclarator : '[' Shift ']'
+  24                  | '[' Shift ']' ArrayDeclarator
+
+  25  IdentifierDeclaration : IdentifierWithoutDot
+  26                        | IdentifierWithoutDot '=' ConditionalExpression
+
+  27  IdentifierList : IdentifierDeclaration
+  28                 | IdentifierList ',' IdentifierDeclaration
+
+  29  Declaration : FuncDeclaration
+  30              | VarDeclarations
+  31              | AggregateDeclaration
+
+  32  VarDeclarations : Type IdentifierList ';'
+  33                  | STRUCT IDENTIFIER IDENTIFIER ';'
+
+  34  FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody
+  35                  | Type '*' IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody
+  36                  | Type IDENTIFIER '(' FuncScopeDummy ')' FunctionBody
+  37                  | Type '*' IDENTIFIER '(' FuncScopeDummy ')' FunctionBody
+
+  38  FuncScopeDummy :
+
+  39  IfScopeDummy1 :
+
+  40  IfScopeDummy2 :
+
+  41  FunctionBody : BlockStatement
+
+  42  BlockStatement : '{' '}'
+  43                 | '{' StatementList '}'
+
+  44  AggregateDeclaration : StructDeclaration
+
+  45  StructDeclaration : STRUCT IDENTIFIER '{' StructScopeDummy VarDeclarationsList '}' ';'
+
+  46  StructScopeDummy :
+
+  47  VarDeclarationsList : Type IdentifierWithoutDot ';'
+  48                      | Type IdentifierWithoutDot ';' VarDeclarationsList
+
+  49  VarDeclarationList : Type Identifier
+  50                     | Type Identifier ',' VarDeclarationList
+
+  51  StatementList : Statement
+  52                | Statement StatementList
+
+  53  Statement : ';'
+  54            | NonEmptyStatement
+
+  55  NonEmptyStatement : NonEmptyStatementNoCaseNoDefault
+
+  56  NonEmptyStatementNoCaseNoDefault : LabeledStatement
+  57                                   | ExpressionStatement
+  58                                   | DeclarationStatement
+  59                                   | IfStatement
+  60                                   | WhileStatement
+  61                                   | DoStatement
+  62                                   | ForStatement
+  63                                   | SwitchStatement
+  64                                   | ContinueStatement
+  65                                   | BreakStatement
+  66                                   | ReturnStatement
+  67                                   | GotoStatement
+  68                                   | PrintStatement
+
+  69  PrintStatement : WRITELN '(' Expression ')'
+
+  70  LabeledStatement : IDENTIFIER ':' Statement
+
+  71  ExpressionStatement : Expression ';'
+
+  72  Expression : ConditionalExpression
+  73             | MulDivMod AssignmentOperator Expression
+
+  74  ConditionalExpression : OrOrExpression
+  75                        | OrOrExpression '?' Expression ':' ConditionalExpression
+
+  76  OrOrExpression : AndAndExpression
+  77                 | OrOrExpression OR_OR AndAndExpression
+
+  78  AndAndExpression : OrExpression
+  79                   | AndAndExpression AND_AND OrExpression
+
+  80  OrExpression : XorExpression
+  81               | OrExpression '|' XorExpression
+
+  82  XorExpression : AndExpression
+  83                | XorExpression '^' AndExpression
+
+  84  AndExpression : EqualNotEqual
+  85                | AndExpression '&' EqualNotEqual
+
+  86  EqualNotEqual : LtGtLteGte
+  87                | EqualNotEqual EQ_EQ LtGtLteGte
+  88                | EqualNotEqual NEQ LtGtLteGte
+
+  89  LtGtLteGte : Shift
+  90             | LtGtLteGte '<' Shift
+  91             | LtGtLteGte '>' Shift
+  92             | LtGtLteGte LEQ Shift
+  93             | LtGtLteGte GEQ Shift
+
+  94  Shift : PlusMinus
+  95        | Shift LSHIFT PlusMinus
+  96        | Shift RSHIFT PlusMinus
+  97        | Shift LOG_RSHIFT PlusMinus
+
+  98  PlusMinus : MulDivMod
+  99            | PlusMinus '+' MulDivMod
+ 100            | PlusMinus '-' MulDivMod
+
+ 101  MulDivMod : UnaryExpression
+ 102            | UnaryExpression PLUS_PLUS
+ 103            | UnaryExpression MIN_MIN
+ 104            | MulDivMod '*' UnaryExpression
+ 105            | MulDivMod '/' UnaryExpression
+ 106            | MulDivMod '%' UnaryExpression
+ 107            | PointerExpression
+ 108            | MulDivMod '*' PointerExpression
+ 109            | MulDivMod '/' PointerExpression
+ 110            | MulDivMod '%' PointerExpression
+
+ 111  UnaryExpression : MainExpression
+ 112                  | UnaryOperator UnaryExpression
+ 113                  | UnaryOperator PointerExpression
+ 114                  | SIZEOF '(' Type ')'
+
+ 115  PointerExpression : '*' UnaryExpression
+
+ 116  UnaryOperator : '+'
+ 117                | '-'
+ 118                | '!'
+ 119                | '~'
+ 120                | '&'
+ 121                | PLUS_PLUS
+ 122                | MIN_MIN
+
+ 123  MainExpression : Starting
+ 124                 | IDENTIFIER ArraySuffixes
+ 125                 | IDENTIFIER '(' ')'
+ 126                 | IDENTIFIER '(' ExpressionList ')'
+ 127                 | IDENTIFIER '.' MainExpression
+
+ 128  ArraySuffixes : ArraySuffix
+ 129                | ArraySuffix ArraySuffixes
+
+ 130  ArraySuffix : '[' Expression ']'
+
+ 131  ExpressionList : Expression
+ 132                 | ExpressionList ',' Expression
+
+ 133  Starting : IDENTIFIER
+ 134           | INT_LIT
+ 135           | FLOAT_LIT
+ 136           | STRING_LIT
+ 137           | CHAR_LIT
+ 138           | TRUE
+ 139           | FALSE
+ 140           | '(' Expression ')'
+
+ 141  AssignmentOperator : '='
+ 142                     | PLUS_EQ
+ 143                     | MIN_EQ
+ 144                     | MULT_EQ
+ 145                     | DIV_EQ
+ 146                     | MOD_EQ
+ 147                     | AND_EQ
+ 148                     | OR_EQ
+ 149                     | XOR_EQ
+ 150                     | INV_EQ
+ 151                     | LSHIFT_EQ
+ 152                     | RSHIFT_EQ
+ 153                     | LOG_RSHIFT_EQ
+ 154                     | POW_EQ
+
+ 155  DeclarationStatement : Declaration
+
+ 156  IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement
+ 157              | IF '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement
+
+ 158  IfEndScopeDummy :
+
+ 159  WhileStatement : WHILE '(' WhileScopeDummy Expression ')' BlockStatement
+
+ 160  WhileScopeDummy :
+
+ 161  DoScopeDummy :
+
+ 162  ForScopeDummy :
+
+ 163  DoStatement : DO DoScopeDummy BlockStatement WHILE '(' Expression ')' ';'
+
+ 164  ForStatement : FOR '(' ForScopeDummy Initialize Initialize ')' BlockStatement
+ 165               | FOR '(' ForScopeDummy Initialize Initialize Expression ')' BlockStatement
+
+ 166  Initialize : ';'
+ 167             | ExpressionStatement
+
+ 168  ContinueStatement : CONTINUE ';'
+
+ 169  BreakStatement : BREAK ';'
+
+ 170  ReturnStatement : RETURN Expression ';'
+ 171                  | RETURN ';'
+
+ 172  GotoStatement : GOTO IDENTIFIER ';'
+
+ 173  SwitchStatement : SWITCH SwitchDummy '(' Expression ')' '{' CaseDefaultStatement '}'
+
+ 174  CaseDefaultStatement : CaseStatement
+ 175                       | DefaultStatement
+ 176                       | CaseStatement CaseDefaultStatement
+ 177                       | DefaultStatement CaseDefaultStatement
+
+ 178  CaseStatement : CASE Starting ':' CaseStatementDummy StatementListNoCaseNoDefault
+
+ 179  DefaultStatement : DEFAULT ':' CaseStatementDummy StatementListNoCaseNoDefault
+
+ 180  CaseStatementDummy :
+
+ 181  SwitchDummy :
+
+ 182  StatementListNoCaseNoDefault : StatementNoCaseNoDefault
+ 183                               | StatementNoCaseNoDefault StatementListNoCaseNoDefault
+
+ 184  StatementNoCaseNoDefault : ';'
+ 185                           | NonEmptyStatementNoCaseNoDefault
+ 186                           | BlockStatement
+
+state 0
+	$accept : . Declarations $end  (0)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	STRUCT  shift 9
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	.  error
+
+	Declarations  goto 15
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 18
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+
+
+state 1
+	Type1 : BOOL .  (10)
+
+	.  reduce 10
+
+
+state 2
+	Type1 : BYTE .  (11)
+
+	.  reduce 11
+
+
+state 3
+	Type1 : CHAR .  (19)
+
+	.  reduce 19
+
+
+state 4
+	Type1 : DOUBLE .  (21)
+
+	.  reduce 21
+
+
+state 5
+	Type1 : FLOAT .  (20)
+
+	.  reduce 20
+
+
+state 6
+	Type1 : INT .  (15)
+
+	.  reduce 15
+
+
+state 7
+	Type1 : LONG .  (17)
+
+	.  reduce 17
+
+
+state 8
+	Type1 : SHORT .  (13)
+
+	.  reduce 13
+
+
+state 9
+	VarDeclarations : STRUCT . IDENTIFIER IDENTIFIER ';'  (33)
+	StructDeclaration : STRUCT . IDENTIFIER '{' StructScopeDummy VarDeclarationsList '}' ';'  (45)
+
+	IDENTIFIER  shift 23
+	.  error
+
+
+state 10
+	Type1 : UBYTE .  (12)
+
+	.  reduce 12
+
+
+state 11
+	Type1 : UINT .  (16)
+
+	.  reduce 16
+
+
+state 12
+	Type1 : ULONG .  (18)
+
+	.  reduce 18
+
+
+state 13
+	Type1 : USHORT .  (14)
+
+	.  reduce 14
+
+
+state 14
+	Type1 : VOID .  (22)
+
+	.  reduce 22
+
+
+state 15
+	$accept : Declarations . $end  (0)
+	Declarations : Declarations . Declaration  (2)
+
+	$end  accept
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	STRUCT  shift 9
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	.  error
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 24
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+
+
+state 16
+	Type : Type1 .  (8)
+	Type : Type1 . ArrayDeclarator  (9)
+
+	'['  shift 25
+	IDENTIFIER  reduce 8
+	'*'  reduce 8
+	')'  reduce 8
+
+	ArrayDeclarator  goto 26
+
+
+state 17
+	VarDeclarations : Type . IdentifierList ';'  (32)
+	FuncDeclaration : Type . IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody  (34)
+	FuncDeclaration : Type . '*' IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody  (35)
+	FuncDeclaration : Type . IDENTIFIER '(' FuncScopeDummy ')' FunctionBody  (36)
+	FuncDeclaration : Type . '*' IDENTIFIER '(' FuncScopeDummy ')' FunctionBody  (37)
+
+	IDENTIFIER  shift 27
+	'*'  shift 28
+	.  error
+
+	IdentifierWithoutDot  goto 29
+	IdentifierList  goto 30
+	IdentifierDeclaration  goto 31
+
+
+state 18
+	Declarations : Declaration .  (1)
+
+	.  reduce 1
+
+
+state 19
+	Declaration : VarDeclarations .  (30)
+
+	.  reduce 30
+
+
+state 20
+	Declaration : FuncDeclaration .  (29)
+
+	.  reduce 29
+
+
+state 21
+	Declaration : AggregateDeclaration .  (31)
+
+	.  reduce 31
+
+
+state 22
+	AggregateDeclaration : StructDeclaration .  (44)
+
+	.  reduce 44
+
+
+state 23
+	VarDeclarations : STRUCT IDENTIFIER . IDENTIFIER ';'  (33)
+	StructDeclaration : STRUCT IDENTIFIER . '{' StructScopeDummy VarDeclarationsList '}' ';'  (45)
+
+	IDENTIFIER  shift 32
+	'{'  shift 33
+	.  error
+
+
+state 24
+	Declarations : Declarations Declaration .  (2)
+
+	.  reduce 2
+
+
+state 25
+	ArrayDeclarator : '[' . Shift ']'  (23)
+	ArrayDeclarator : '[' . Shift ']' ArrayDeclarator  (24)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Shift  goto 51
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 26
+	Type : Type1 ArrayDeclarator .  (9)
+
+	.  reduce 9
+
+
+state 27
+	IdentifierWithoutDot : IDENTIFIER .  (3)
+	IdentifierWithoutDot : IDENTIFIER . ArrayDeclarator  (4)
+	FuncDeclaration : Type IDENTIFIER . '(' FuncScopeDummy VarDeclarationList ')' FunctionBody  (34)
+	FuncDeclaration : Type IDENTIFIER . '(' FuncScopeDummy ')' FunctionBody  (36)
+
+	'['  shift 25
+	'('  shift 59
+	'='  reduce 3
+	','  reduce 3
+	';'  reduce 3
+
+	ArrayDeclarator  goto 60
+
+
+state 28
+	IdentifierWithoutDot : '*' . IDENTIFIER  (5)
+	FuncDeclaration : Type '*' . IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody  (35)
+	FuncDeclaration : Type '*' . IDENTIFIER '(' FuncScopeDummy ')' FunctionBody  (37)
+
+	IDENTIFIER  shift 61
+	.  error
+
+
+state 29
+	IdentifierDeclaration : IdentifierWithoutDot .  (25)
+	IdentifierDeclaration : IdentifierWithoutDot . '=' ConditionalExpression  (26)
+
+	'='  shift 62
+	','  reduce 25
+	';'  reduce 25
+
+
+state 30
+	IdentifierList : IdentifierList . ',' IdentifierDeclaration  (28)
+	VarDeclarations : Type IdentifierList . ';'  (32)
+
+	','  shift 63
+	';'  shift 64
+	.  error
+
+
+state 31
+	IdentifierList : IdentifierDeclaration .  (27)
+
+	.  reduce 27
+
+
+state 32
+	VarDeclarations : STRUCT IDENTIFIER IDENTIFIER . ';'  (33)
+
+	';'  shift 65
+	.  error
+
+
+state 33
+	StructDeclaration : STRUCT IDENTIFIER '{' . StructScopeDummy VarDeclarationsList '}' ';'  (45)
+	StructScopeDummy : .  (46)
+
+	.  reduce 46
+
+	StructScopeDummy  goto 66
+
+
+state 34
+	Starting : INT_LIT .  (134)
+
+	.  reduce 134
+
+
+state 35
+	Starting : FLOAT_LIT .  (135)
+
+	.  reduce 135
+
+
+state 36
+	Starting : CHAR_LIT .  (137)
+
+	.  reduce 137
+
+
+state 37
+	Starting : STRING_LIT .  (136)
+
+	.  reduce 136
+
+
+state 38
+	MainExpression : IDENTIFIER . ArraySuffixes  (124)
+	MainExpression : IDENTIFIER . '(' ')'  (125)
+	MainExpression : IDENTIFIER . '(' ExpressionList ')'  (126)
+	MainExpression : IDENTIFIER . '.' MainExpression  (127)
+	Starting : IDENTIFIER .  (133)
+
+	'.'  shift 67
+	'['  shift 68
+	'('  shift 69
+	DIV_EQ  reduce 133
+	AND_EQ  reduce 133
+	AND_AND  reduce 133
+	OR_EQ  reduce 133
+	OR_OR  reduce 133
+	MIN_EQ  reduce 133
+	MIN_MIN  reduce 133
+	PLUS_EQ  reduce 133
+	PLUS_PLUS  reduce 133
+	LEQ  reduce 133
+	LSHIFT  reduce 133
+	LSHIFT_EQ  reduce 133
+	GEQ  reduce 133
+	RSHIFT_EQ  reduce 133
+	LOG_RSHIFT_EQ  reduce 133
+	RSHIFT  reduce 133
+	LOG_RSHIFT  reduce 133
+	NEQ  reduce 133
+	EQ_EQ  reduce 133
+	MULT_EQ  reduce 133
+	MOD_EQ  reduce 133
+	XOR_EQ  reduce 133
+	POW_EQ  reduce 133
+	INV_EQ  reduce 133
+	'*'  reduce 133
+	']'  reduce 133
+	'='  reduce 133
+	','  reduce 133
+	';'  reduce 133
+	')'  reduce 133
+	':'  reduce 133
+	'?'  reduce 133
+	'|'  reduce 133
+	'^'  reduce 133
+	'&'  reduce 133
+	'<'  reduce 133
+	'>'  reduce 133
+	'+'  reduce 133
+	'-'  reduce 133
+	'/'  reduce 133
+	'%'  reduce 133
+
+	ArraySuffix  goto 70
+	ArraySuffixes  goto 71
+
+
+state 39
+	UnaryOperator : MIN_MIN .  (122)
+
+	.  reduce 122
+
+
+state 40
+	UnaryOperator : PLUS_PLUS .  (121)
+
+	.  reduce 121
+
+
+state 41
+	Starting : FALSE .  (139)
+
+	.  reduce 139
+
+
+state 42
+	UnaryExpression : SIZEOF . '(' Type ')'  (114)
+
+	'('  shift 72
+	.  error
+
+
+state 43
+	Starting : TRUE .  (138)
+
+	.  reduce 138
+
+
+state 44
+	PointerExpression : '*' . UnaryExpression  (115)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	UnaryExpression  goto 73
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 45
+	Starting : '(' . Expression ')'  (140)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 74
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 46
+	UnaryOperator : '&' .  (120)
+
+	.  reduce 120
+
+
+state 47
+	UnaryOperator : '+' .  (116)
+
+	.  reduce 116
+
+
+state 48
+	UnaryOperator : '-' .  (117)
+
+	.  reduce 117
+
+
+state 49
+	UnaryOperator : '!' .  (118)
+
+	.  reduce 118
+
+
+state 50
+	UnaryOperator : '~' .  (119)
+
+	.  reduce 119
+
+
+state 51
+	ArrayDeclarator : '[' Shift . ']'  (23)
+	ArrayDeclarator : '[' Shift . ']' ArrayDeclarator  (24)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	']'  shift 88
+	.  error
+
+
+state 52
+	Shift : PlusMinus .  (94)
+	PlusMinus : PlusMinus . '+' MulDivMod  (99)
+	PlusMinus : PlusMinus . '-' MulDivMod  (100)
+
+	'+'  shift 89
+	'-'  shift 90
+	AND_AND  reduce 94
+	OR_OR  reduce 94
+	LEQ  reduce 94
+	LSHIFT  reduce 94
+	GEQ  reduce 94
+	RSHIFT  reduce 94
+	LOG_RSHIFT  reduce 94
+	NEQ  reduce 94
+	EQ_EQ  reduce 94
+	']'  reduce 94
+	','  reduce 94
+	';'  reduce 94
+	')'  reduce 94
+	':'  reduce 94
+	'?'  reduce 94
+	'|'  reduce 94
+	'^'  reduce 94
+	'&'  reduce 94
+	'<'  reduce 94
+	'>'  reduce 94
+
+
+state 53
+	PlusMinus : MulDivMod .  (98)
+	MulDivMod : MulDivMod . '*' UnaryExpression  (104)
+	MulDivMod : MulDivMod . '/' UnaryExpression  (105)
+	MulDivMod : MulDivMod . '%' UnaryExpression  (106)
+	MulDivMod : MulDivMod . '*' PointerExpression  (108)
+	MulDivMod : MulDivMod . '/' PointerExpression  (109)
+	MulDivMod : MulDivMod . '%' PointerExpression  (110)
+
+	'*'  shift 91
+	'/'  shift 92
+	'%'  shift 93
+	AND_AND  reduce 98
+	OR_OR  reduce 98
+	LEQ  reduce 98
+	LSHIFT  reduce 98
+	GEQ  reduce 98
+	RSHIFT  reduce 98
+	LOG_RSHIFT  reduce 98
+	NEQ  reduce 98
+	EQ_EQ  reduce 98
+	']'  reduce 98
+	','  reduce 98
+	';'  reduce 98
+	')'  reduce 98
+	':'  reduce 98
+	'?'  reduce 98
+	'|'  reduce 98
+	'^'  reduce 98
+	'&'  reduce 98
+	'<'  reduce 98
+	'>'  reduce 98
+	'+'  reduce 98
+	'-'  reduce 98
+
+
+state 54
+	MulDivMod : UnaryExpression .  (101)
+	MulDivMod : UnaryExpression . PLUS_PLUS  (102)
+	MulDivMod : UnaryExpression . MIN_MIN  (103)
+
+	MIN_MIN  shift 94
+	PLUS_PLUS  shift 95
+	DIV_EQ  reduce 101
+	AND_EQ  reduce 101
+	AND_AND  reduce 101
+	OR_EQ  reduce 101
+	OR_OR  reduce 101
+	MIN_EQ  reduce 101
+	PLUS_EQ  reduce 101
+	LEQ  reduce 101
+	LSHIFT  reduce 101
+	LSHIFT_EQ  reduce 101
+	GEQ  reduce 101
+	RSHIFT_EQ  reduce 101
+	LOG_RSHIFT_EQ  reduce 101
+	RSHIFT  reduce 101
+	LOG_RSHIFT  reduce 101
+	NEQ  reduce 101
+	EQ_EQ  reduce 101
+	MULT_EQ  reduce 101
+	MOD_EQ  reduce 101
+	XOR_EQ  reduce 101
+	POW_EQ  reduce 101
+	INV_EQ  reduce 101
+	'*'  reduce 101
+	']'  reduce 101
+	'='  reduce 101
+	','  reduce 101
+	';'  reduce 101
+	')'  reduce 101
+	':'  reduce 101
+	'?'  reduce 101
+	'|'  reduce 101
+	'^'  reduce 101
+	'&'  reduce 101
+	'<'  reduce 101
+	'>'  reduce 101
+	'+'  reduce 101
+	'-'  reduce 101
+	'/'  reduce 101
+	'%'  reduce 101
+
+
+state 55
+	MulDivMod : PointerExpression .  (107)
+
+	.  reduce 107
+
+
+state 56
+	UnaryExpression : UnaryOperator . UnaryExpression  (112)
+	UnaryExpression : UnaryOperator . PointerExpression  (113)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	UnaryExpression  goto 96
+	PointerExpression  goto 97
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 57
+	UnaryExpression : MainExpression .  (111)
+
+	.  reduce 111
+
+
+state 58
+	MainExpression : Starting .  (123)
+
+	.  reduce 123
+
+
+state 59
+	FuncDeclaration : Type IDENTIFIER '(' . FuncScopeDummy VarDeclarationList ')' FunctionBody  (34)
+	FuncDeclaration : Type IDENTIFIER '(' . FuncScopeDummy ')' FunctionBody  (36)
+	FuncScopeDummy : .  (38)
+
+	.  reduce 38
+
+	FuncScopeDummy  goto 98
+
+
+state 60
+	IdentifierWithoutDot : IDENTIFIER ArrayDeclarator .  (4)
+
+	.  reduce 4
+
+
+state 61
+	IdentifierWithoutDot : '*' IDENTIFIER .  (5)
+	FuncDeclaration : Type '*' IDENTIFIER . '(' FuncScopeDummy VarDeclarationList ')' FunctionBody  (35)
+	FuncDeclaration : Type '*' IDENTIFIER . '(' FuncScopeDummy ')' FunctionBody  (37)
+
+	'('  shift 99
+	'='  reduce 5
+	','  reduce 5
+	';'  reduce 5
+
+
+state 62
+	IdentifierDeclaration : IdentifierWithoutDot '=' . ConditionalExpression  (26)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	ConditionalExpression  goto 100
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 63
+	IdentifierList : IdentifierList ',' . IdentifierDeclaration  (28)
+
+	IDENTIFIER  shift 101
+	'*'  shift 102
+	.  error
+
+	IdentifierWithoutDot  goto 29
+	IdentifierDeclaration  goto 103
+
+
+state 64
+	VarDeclarations : Type IdentifierList ';' .  (32)
+
+	.  reduce 32
+
+
+state 65
+	VarDeclarations : STRUCT IDENTIFIER IDENTIFIER ';' .  (33)
+
+	.  reduce 33
+
+
+state 66
+	StructDeclaration : STRUCT IDENTIFIER '{' StructScopeDummy . VarDeclarationsList '}' ';'  (45)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	.  error
+
+	Type1  goto 16
+	Type  goto 104
+	VarDeclarationsList  goto 105
+
+
+state 67
+	MainExpression : IDENTIFIER '.' . MainExpression  (127)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	FALSE  shift 41
+	TRUE  shift 43
+	'('  shift 45
+	.  error
+
+	MainExpression  goto 106
+	Starting  goto 58
+
+
+state 68
+	ArraySuffix : '[' . Expression ']'  (130)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 107
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 69
+	MainExpression : IDENTIFIER '(' . ')'  (125)
+	MainExpression : IDENTIFIER '(' . ExpressionList ')'  (126)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	')'  shift 108
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 109
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	ExpressionList  goto 110
+	Starting  goto 58
+
+
+state 70
+	ArraySuffixes : ArraySuffix .  (128)
+	ArraySuffixes : ArraySuffix . ArraySuffixes  (129)
+
+	'['  shift 68
+	DIV_EQ  reduce 128
+	AND_EQ  reduce 128
+	AND_AND  reduce 128
+	OR_EQ  reduce 128
+	OR_OR  reduce 128
+	MIN_EQ  reduce 128
+	MIN_MIN  reduce 128
+	PLUS_EQ  reduce 128
+	PLUS_PLUS  reduce 128
+	LEQ  reduce 128
+	LSHIFT  reduce 128
+	LSHIFT_EQ  reduce 128
+	GEQ  reduce 128
+	RSHIFT_EQ  reduce 128
+	LOG_RSHIFT_EQ  reduce 128
+	RSHIFT  reduce 128
+	LOG_RSHIFT  reduce 128
+	NEQ  reduce 128
+	EQ_EQ  reduce 128
+	MULT_EQ  reduce 128
+	MOD_EQ  reduce 128
+	XOR_EQ  reduce 128
+	POW_EQ  reduce 128
+	INV_EQ  reduce 128
+	'*'  reduce 128
+	']'  reduce 128
+	'='  reduce 128
+	','  reduce 128
+	';'  reduce 128
+	')'  reduce 128
+	':'  reduce 128
+	'?'  reduce 128
+	'|'  reduce 128
+	'^'  reduce 128
+	'&'  reduce 128
+	'<'  reduce 128
+	'>'  reduce 128
+	'+'  reduce 128
+	'-'  reduce 128
+	'/'  reduce 128
+	'%'  reduce 128
+
+	ArraySuffix  goto 70
+	ArraySuffixes  goto 111
+
+
+state 71
+	MainExpression : IDENTIFIER ArraySuffixes .  (124)
+
+	.  reduce 124
+
+
+state 72
+	UnaryExpression : SIZEOF '(' . Type ')'  (114)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	.  error
+
+	Type1  goto 16
+	Type  goto 112
+
+
+state 73
+	PointerExpression : '*' UnaryExpression .  (115)
+
+	.  reduce 115
+
+
+state 74
+	Starting : '(' Expression . ')'  (140)
+
+	')'  shift 113
+	.  error
+
+
+state 75
+	Expression : ConditionalExpression .  (72)
+
+	.  reduce 72
+
+
+state 76
+	ConditionalExpression : OrOrExpression .  (74)
+	ConditionalExpression : OrOrExpression . '?' Expression ':' ConditionalExpression  (75)
+	OrOrExpression : OrOrExpression . OR_OR AndAndExpression  (77)
+
+	OR_OR  shift 114
+	'?'  shift 115
+	']'  reduce 74
+	','  reduce 74
+	';'  reduce 74
+	')'  reduce 74
+	':'  reduce 74
+
+
+state 77
+	OrOrExpression : AndAndExpression .  (76)
+	AndAndExpression : AndAndExpression . AND_AND OrExpression  (79)
+
+	AND_AND  shift 116
+	OR_OR  reduce 76
+	']'  reduce 76
+	','  reduce 76
+	';'  reduce 76
+	')'  reduce 76
+	':'  reduce 76
+	'?'  reduce 76
+
+
+state 78
+	AndAndExpression : OrExpression .  (78)
+	OrExpression : OrExpression . '|' XorExpression  (81)
+
+	'|'  shift 117
+	AND_AND  reduce 78
+	OR_OR  reduce 78
+	']'  reduce 78
+	','  reduce 78
+	';'  reduce 78
+	')'  reduce 78
+	':'  reduce 78
+	'?'  reduce 78
+
+
+state 79
+	OrExpression : XorExpression .  (80)
+	XorExpression : XorExpression . '^' AndExpression  (83)
+
+	'^'  shift 118
+	AND_AND  reduce 80
+	OR_OR  reduce 80
+	']'  reduce 80
+	','  reduce 80
+	';'  reduce 80
+	')'  reduce 80
+	':'  reduce 80
+	'?'  reduce 80
+	'|'  reduce 80
+
+
+state 80
+	XorExpression : AndExpression .  (82)
+	AndExpression : AndExpression . '&' EqualNotEqual  (85)
+
+	'&'  shift 119
+	AND_AND  reduce 82
+	OR_OR  reduce 82
+	']'  reduce 82
+	','  reduce 82
+	';'  reduce 82
+	')'  reduce 82
+	':'  reduce 82
+	'?'  reduce 82
+	'|'  reduce 82
+	'^'  reduce 82
+
+
+state 81
+	AndExpression : EqualNotEqual .  (84)
+	EqualNotEqual : EqualNotEqual . EQ_EQ LtGtLteGte  (87)
+	EqualNotEqual : EqualNotEqual . NEQ LtGtLteGte  (88)
+
+	NEQ  shift 120
+	EQ_EQ  shift 121
+	AND_AND  reduce 84
+	OR_OR  reduce 84
+	']'  reduce 84
+	','  reduce 84
+	';'  reduce 84
+	')'  reduce 84
+	':'  reduce 84
+	'?'  reduce 84
+	'|'  reduce 84
+	'^'  reduce 84
+	'&'  reduce 84
+
+
+state 82
+	EqualNotEqual : LtGtLteGte .  (86)
+	LtGtLteGte : LtGtLteGte . '<' Shift  (90)
+	LtGtLteGte : LtGtLteGte . '>' Shift  (91)
+	LtGtLteGte : LtGtLteGte . LEQ Shift  (92)
+	LtGtLteGte : LtGtLteGte . GEQ Shift  (93)
+
+	LEQ  shift 122
+	GEQ  shift 123
+	'<'  shift 124
+	'>'  shift 125
+	AND_AND  reduce 86
+	OR_OR  reduce 86
+	NEQ  reduce 86
+	EQ_EQ  reduce 86
+	']'  reduce 86
+	','  reduce 86
+	';'  reduce 86
+	')'  reduce 86
+	':'  reduce 86
+	'?'  reduce 86
+	'|'  reduce 86
+	'^'  reduce 86
+	'&'  reduce 86
+
+
+state 83
+	LtGtLteGte : Shift .  (89)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	AND_AND  reduce 89
+	OR_OR  reduce 89
+	LEQ  reduce 89
+	GEQ  reduce 89
+	NEQ  reduce 89
+	EQ_EQ  reduce 89
+	']'  reduce 89
+	','  reduce 89
+	';'  reduce 89
+	')'  reduce 89
+	':'  reduce 89
+	'?'  reduce 89
+	'|'  reduce 89
+	'^'  reduce 89
+	'&'  reduce 89
+	'<'  reduce 89
+	'>'  reduce 89
+
+
+state 84
+	Expression : MulDivMod . AssignmentOperator Expression  (73)
+	PlusMinus : MulDivMod .  (98)
+	MulDivMod : MulDivMod . '*' UnaryExpression  (104)
+	MulDivMod : MulDivMod . '/' UnaryExpression  (105)
+	MulDivMod : MulDivMod . '%' UnaryExpression  (106)
+	MulDivMod : MulDivMod . '*' PointerExpression  (108)
+	MulDivMod : MulDivMod . '/' PointerExpression  (109)
+	MulDivMod : MulDivMod . '%' PointerExpression  (110)
+
+	DIV_EQ  shift 126
+	AND_EQ  shift 127
+	OR_EQ  shift 128
+	MIN_EQ  shift 129
+	PLUS_EQ  shift 130
+	LSHIFT_EQ  shift 131
+	RSHIFT_EQ  shift 132
+	LOG_RSHIFT_EQ  shift 133
+	MULT_EQ  shift 134
+	MOD_EQ  shift 135
+	XOR_EQ  shift 136
+	POW_EQ  shift 137
+	INV_EQ  shift 138
+	'*'  shift 91
+	'='  shift 139
+	'/'  shift 92
+	'%'  shift 93
+	AND_AND  reduce 98
+	OR_OR  reduce 98
+	LEQ  reduce 98
+	LSHIFT  reduce 98
+	GEQ  reduce 98
+	RSHIFT  reduce 98
+	LOG_RSHIFT  reduce 98
+	NEQ  reduce 98
+	EQ_EQ  reduce 98
+	']'  reduce 98
+	','  reduce 98
+	';'  reduce 98
+	')'  reduce 98
+	':'  reduce 98
+	'?'  reduce 98
+	'|'  reduce 98
+	'^'  reduce 98
+	'&'  reduce 98
+	'<'  reduce 98
+	'>'  reduce 98
+	'+'  reduce 98
+	'-'  reduce 98
+
+	AssignmentOperator  goto 140
+
+
+state 85
+	Shift : Shift LSHIFT . PlusMinus  (95)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	PlusMinus  goto 141
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 86
+	Shift : Shift RSHIFT . PlusMinus  (96)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	PlusMinus  goto 142
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 87
+	Shift : Shift LOG_RSHIFT . PlusMinus  (97)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	PlusMinus  goto 143
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 88
+	ArrayDeclarator : '[' Shift ']' .  (23)
+	ArrayDeclarator : '[' Shift ']' . ArrayDeclarator  (24)
+
+	'['  shift 25
+	IDENTIFIER  reduce 23
+	'*'  reduce 23
+	'.'  reduce 23
+	'='  reduce 23
+	','  reduce 23
+	';'  reduce 23
+	')'  reduce 23
+
+	ArrayDeclarator  goto 144
+
+
+state 89
+	PlusMinus : PlusMinus '+' . MulDivMod  (99)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	MulDivMod  goto 145
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 90
+	PlusMinus : PlusMinus '-' . MulDivMod  (100)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	MulDivMod  goto 146
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 91
+	MulDivMod : MulDivMod '*' . UnaryExpression  (104)
+	MulDivMod : MulDivMod '*' . PointerExpression  (108)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	UnaryExpression  goto 147
+	PointerExpression  goto 148
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 92
+	MulDivMod : MulDivMod '/' . UnaryExpression  (105)
+	MulDivMod : MulDivMod '/' . PointerExpression  (109)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	UnaryExpression  goto 149
+	PointerExpression  goto 150
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 93
+	MulDivMod : MulDivMod '%' . UnaryExpression  (106)
+	MulDivMod : MulDivMod '%' . PointerExpression  (110)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	UnaryExpression  goto 151
+	PointerExpression  goto 152
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 94
+	MulDivMod : UnaryExpression MIN_MIN .  (103)
+
+	.  reduce 103
+
+
+state 95
+	MulDivMod : UnaryExpression PLUS_PLUS .  (102)
+
+	.  reduce 102
+
+
+state 96
+	UnaryExpression : UnaryOperator UnaryExpression .  (112)
+
+	.  reduce 112
+
+
+state 97
+	UnaryExpression : UnaryOperator PointerExpression .  (113)
+
+	.  reduce 113
+
+
+state 98
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy . VarDeclarationList ')' FunctionBody  (34)
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy . ')' FunctionBody  (36)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	')'  shift 153
+	.  error
+
+	Type1  goto 16
+	Type  goto 154
+	VarDeclarationList  goto 155
+
+
+state 99
+	FuncDeclaration : Type '*' IDENTIFIER '(' . FuncScopeDummy VarDeclarationList ')' FunctionBody  (35)
+	FuncDeclaration : Type '*' IDENTIFIER '(' . FuncScopeDummy ')' FunctionBody  (37)
+	FuncScopeDummy : .  (38)
+
+	.  reduce 38
+
+	FuncScopeDummy  goto 156
+
+
+state 100
+	IdentifierDeclaration : IdentifierWithoutDot '=' ConditionalExpression .  (26)
+
+	.  reduce 26
+
+
+state 101
+	IdentifierWithoutDot : IDENTIFIER .  (3)
+	IdentifierWithoutDot : IDENTIFIER . ArrayDeclarator  (4)
+
+	'['  shift 25
+	'.'  reduce 3
+	'='  reduce 3
+	','  reduce 3
+	';'  reduce 3
+	')'  reduce 3
+
+	ArrayDeclarator  goto 60
+
+
+state 102
+	IdentifierWithoutDot : '*' . IDENTIFIER  (5)
+
+	IDENTIFIER  shift 157
+	.  error
+
+
+state 103
+	IdentifierList : IdentifierList ',' IdentifierDeclaration .  (28)
+
+	.  reduce 28
+
+
+state 104
+	VarDeclarationsList : Type . IdentifierWithoutDot ';'  (47)
+	VarDeclarationsList : Type . IdentifierWithoutDot ';' VarDeclarationsList  (48)
+
+	IDENTIFIER  shift 101
+	'*'  shift 102
+	.  error
+
+	IdentifierWithoutDot  goto 158
+
+
+state 105
+	StructDeclaration : STRUCT IDENTIFIER '{' StructScopeDummy VarDeclarationsList . '}' ';'  (45)
+
+	'}'  shift 159
+	.  error
+
+
+state 106
+	MainExpression : IDENTIFIER '.' MainExpression .  (127)
+
+	.  reduce 127
+
+
+state 107
+	ArraySuffix : '[' Expression . ']'  (130)
+
+	']'  shift 160
+	.  error
+
+
+state 108
+	MainExpression : IDENTIFIER '(' ')' .  (125)
+
+	.  reduce 125
+
+
+state 109
+	ExpressionList : Expression .  (131)
+
+	.  reduce 131
+
+
+state 110
+	MainExpression : IDENTIFIER '(' ExpressionList . ')'  (126)
+	ExpressionList : ExpressionList . ',' Expression  (132)
+
+	','  shift 161
+	')'  shift 162
+	.  error
+
+
+state 111
+	ArraySuffixes : ArraySuffix ArraySuffixes .  (129)
+
+	.  reduce 129
+
+
+state 112
+	UnaryExpression : SIZEOF '(' Type . ')'  (114)
+
+	')'  shift 163
+	.  error
+
+
+state 113
+	Starting : '(' Expression ')' .  (140)
+
+	.  reduce 140
+
+
+state 114
+	OrOrExpression : OrOrExpression OR_OR . AndAndExpression  (77)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	AndAndExpression  goto 164
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 115
+	ConditionalExpression : OrOrExpression '?' . Expression ':' ConditionalExpression  (75)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 165
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 116
+	AndAndExpression : AndAndExpression AND_AND . OrExpression  (79)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	OrExpression  goto 166
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 117
+	OrExpression : OrExpression '|' . XorExpression  (81)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	XorExpression  goto 167
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 118
+	XorExpression : XorExpression '^' . AndExpression  (83)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	AndExpression  goto 168
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 119
+	AndExpression : AndExpression '&' . EqualNotEqual  (85)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	EqualNotEqual  goto 169
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 120
+	EqualNotEqual : EqualNotEqual NEQ . LtGtLteGte  (88)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	LtGtLteGte  goto 170
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 121
+	EqualNotEqual : EqualNotEqual EQ_EQ . LtGtLteGte  (87)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	LtGtLteGte  goto 171
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 122
+	LtGtLteGte : LtGtLteGte LEQ . Shift  (92)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Shift  goto 172
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 123
+	LtGtLteGte : LtGtLteGte GEQ . Shift  (93)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Shift  goto 173
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 124
+	LtGtLteGte : LtGtLteGte '<' . Shift  (90)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Shift  goto 174
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 125
+	LtGtLteGte : LtGtLteGte '>' . Shift  (91)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Shift  goto 175
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 126
+	AssignmentOperator : DIV_EQ .  (145)
+
+	.  reduce 145
+
+
+state 127
+	AssignmentOperator : AND_EQ .  (147)
+
+	.  reduce 147
+
+
+state 128
+	AssignmentOperator : OR_EQ .  (148)
+
+	.  reduce 148
+
+
+state 129
+	AssignmentOperator : MIN_EQ .  (143)
+
+	.  reduce 143
+
+
+state 130
+	AssignmentOperator : PLUS_EQ .  (142)
+
+	.  reduce 142
+
+
+state 131
+	AssignmentOperator : LSHIFT_EQ .  (151)
+
+	.  reduce 151
+
+
+state 132
+	AssignmentOperator : RSHIFT_EQ .  (152)
+
+	.  reduce 152
+
+
+state 133
+	AssignmentOperator : LOG_RSHIFT_EQ .  (153)
+
+	.  reduce 153
+
+
+state 134
+	AssignmentOperator : MULT_EQ .  (144)
+
+	.  reduce 144
+
+
+state 135
+	AssignmentOperator : MOD_EQ .  (146)
+
+	.  reduce 146
+
+
+state 136
+	AssignmentOperator : XOR_EQ .  (149)
+
+	.  reduce 149
+
+
+state 137
+	AssignmentOperator : POW_EQ .  (154)
+
+	.  reduce 154
+
+
+state 138
+	AssignmentOperator : INV_EQ .  (150)
+
+	.  reduce 150
+
+
+state 139
+	AssignmentOperator : '=' .  (141)
+
+	.  reduce 141
+
+
+state 140
+	Expression : MulDivMod AssignmentOperator . Expression  (73)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 176
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 141
+	Shift : Shift LSHIFT PlusMinus .  (95)
+	PlusMinus : PlusMinus . '+' MulDivMod  (99)
+	PlusMinus : PlusMinus . '-' MulDivMod  (100)
+
+	'+'  shift 89
+	'-'  shift 90
+	AND_AND  reduce 95
+	OR_OR  reduce 95
+	LEQ  reduce 95
+	LSHIFT  reduce 95
+	GEQ  reduce 95
+	RSHIFT  reduce 95
+	LOG_RSHIFT  reduce 95
+	NEQ  reduce 95
+	EQ_EQ  reduce 95
+	']'  reduce 95
+	','  reduce 95
+	';'  reduce 95
+	')'  reduce 95
+	':'  reduce 95
+	'?'  reduce 95
+	'|'  reduce 95
+	'^'  reduce 95
+	'&'  reduce 95
+	'<'  reduce 95
+	'>'  reduce 95
+
+
+state 142
+	Shift : Shift RSHIFT PlusMinus .  (96)
+	PlusMinus : PlusMinus . '+' MulDivMod  (99)
+	PlusMinus : PlusMinus . '-' MulDivMod  (100)
+
+	'+'  shift 89
+	'-'  shift 90
+	AND_AND  reduce 96
+	OR_OR  reduce 96
+	LEQ  reduce 96
+	LSHIFT  reduce 96
+	GEQ  reduce 96
+	RSHIFT  reduce 96
+	LOG_RSHIFT  reduce 96
+	NEQ  reduce 96
+	EQ_EQ  reduce 96
+	']'  reduce 96
+	','  reduce 96
+	';'  reduce 96
+	')'  reduce 96
+	':'  reduce 96
+	'?'  reduce 96
+	'|'  reduce 96
+	'^'  reduce 96
+	'&'  reduce 96
+	'<'  reduce 96
+	'>'  reduce 96
+
+
+state 143
+	Shift : Shift LOG_RSHIFT PlusMinus .  (97)
+	PlusMinus : PlusMinus . '+' MulDivMod  (99)
+	PlusMinus : PlusMinus . '-' MulDivMod  (100)
+
+	'+'  shift 89
+	'-'  shift 90
+	AND_AND  reduce 97
+	OR_OR  reduce 97
+	LEQ  reduce 97
+	LSHIFT  reduce 97
+	GEQ  reduce 97
+	RSHIFT  reduce 97
+	LOG_RSHIFT  reduce 97
+	NEQ  reduce 97
+	EQ_EQ  reduce 97
+	']'  reduce 97
+	','  reduce 97
+	';'  reduce 97
+	')'  reduce 97
+	':'  reduce 97
+	'?'  reduce 97
+	'|'  reduce 97
+	'^'  reduce 97
+	'&'  reduce 97
+	'<'  reduce 97
+	'>'  reduce 97
+
+
+state 144
+	ArrayDeclarator : '[' Shift ']' ArrayDeclarator .  (24)
+
+	.  reduce 24
+
+
+state 145
+	PlusMinus : PlusMinus '+' MulDivMod .  (99)
+	MulDivMod : MulDivMod . '*' UnaryExpression  (104)
+	MulDivMod : MulDivMod . '/' UnaryExpression  (105)
+	MulDivMod : MulDivMod . '%' UnaryExpression  (106)
+	MulDivMod : MulDivMod . '*' PointerExpression  (108)
+	MulDivMod : MulDivMod . '/' PointerExpression  (109)
+	MulDivMod : MulDivMod . '%' PointerExpression  (110)
+
+	'*'  shift 91
+	'/'  shift 92
+	'%'  shift 93
+	AND_AND  reduce 99
+	OR_OR  reduce 99
+	LEQ  reduce 99
+	LSHIFT  reduce 99
+	GEQ  reduce 99
+	RSHIFT  reduce 99
+	LOG_RSHIFT  reduce 99
+	NEQ  reduce 99
+	EQ_EQ  reduce 99
+	']'  reduce 99
+	','  reduce 99
+	';'  reduce 99
+	')'  reduce 99
+	':'  reduce 99
+	'?'  reduce 99
+	'|'  reduce 99
+	'^'  reduce 99
+	'&'  reduce 99
+	'<'  reduce 99
+	'>'  reduce 99
+	'+'  reduce 99
+	'-'  reduce 99
+
+
+state 146
+	PlusMinus : PlusMinus '-' MulDivMod .  (100)
+	MulDivMod : MulDivMod . '*' UnaryExpression  (104)
+	MulDivMod : MulDivMod . '/' UnaryExpression  (105)
+	MulDivMod : MulDivMod . '%' UnaryExpression  (106)
+	MulDivMod : MulDivMod . '*' PointerExpression  (108)
+	MulDivMod : MulDivMod . '/' PointerExpression  (109)
+	MulDivMod : MulDivMod . '%' PointerExpression  (110)
+
+	'*'  shift 91
+	'/'  shift 92
+	'%'  shift 93
+	AND_AND  reduce 100
+	OR_OR  reduce 100
+	LEQ  reduce 100
+	LSHIFT  reduce 100
+	GEQ  reduce 100
+	RSHIFT  reduce 100
+	LOG_RSHIFT  reduce 100
+	NEQ  reduce 100
+	EQ_EQ  reduce 100
+	']'  reduce 100
+	','  reduce 100
+	';'  reduce 100
+	')'  reduce 100
+	':'  reduce 100
+	'?'  reduce 100
+	'|'  reduce 100
+	'^'  reduce 100
+	'&'  reduce 100
+	'<'  reduce 100
+	'>'  reduce 100
+	'+'  reduce 100
+	'-'  reduce 100
+
+
+state 147
+	MulDivMod : MulDivMod '*' UnaryExpression .  (104)
+
+	.  reduce 104
+
+
+state 148
+	MulDivMod : MulDivMod '*' PointerExpression .  (108)
+
+	.  reduce 108
+
+
+state 149
+	MulDivMod : MulDivMod '/' UnaryExpression .  (105)
+
+	.  reduce 105
+
+
+state 150
+	MulDivMod : MulDivMod '/' PointerExpression .  (109)
+
+	.  reduce 109
+
+
+state 151
+	MulDivMod : MulDivMod '%' UnaryExpression .  (106)
+
+	.  reduce 106
+
+
+state 152
+	MulDivMod : MulDivMod '%' PointerExpression .  (110)
+
+	.  reduce 110
+
+
+state 153
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy ')' . FunctionBody  (36)
+
+	'{'  shift 177
+	.  error
+
+	FunctionBody  goto 178
+	BlockStatement  goto 179
+
+
+state 154
+	VarDeclarationList : Type . Identifier  (49)
+	VarDeclarationList : Type . Identifier ',' VarDeclarationList  (50)
+
+	IDENTIFIER  shift 101
+	'*'  shift 102
+	.  error
+
+	IdentifierWithoutDot  goto 180
+	Identifier  goto 181
+
+
+state 155
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy VarDeclarationList . ')' FunctionBody  (34)
+
+	')'  shift 182
+	.  error
+
+
+state 156
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy . VarDeclarationList ')' FunctionBody  (35)
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy . ')' FunctionBody  (37)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	')'  shift 183
+	.  error
+
+	Type1  goto 16
+	Type  goto 154
+	VarDeclarationList  goto 184
+
+
+state 157
+	IdentifierWithoutDot : '*' IDENTIFIER .  (5)
+
+	.  reduce 5
+
+
+state 158
+	VarDeclarationsList : Type IdentifierWithoutDot . ';'  (47)
+	VarDeclarationsList : Type IdentifierWithoutDot . ';' VarDeclarationsList  (48)
+
+	';'  shift 185
+	.  error
+
+
+state 159
+	StructDeclaration : STRUCT IDENTIFIER '{' StructScopeDummy VarDeclarationsList '}' . ';'  (45)
+
+	';'  shift 186
+	.  error
+
+
+state 160
+	ArraySuffix : '[' Expression ']' .  (130)
+
+	.  reduce 130
+
+
+state 161
+	ExpressionList : ExpressionList ',' . Expression  (132)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 187
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 162
+	MainExpression : IDENTIFIER '(' ExpressionList ')' .  (126)
+
+	.  reduce 126
+
+
+state 163
+	UnaryExpression : SIZEOF '(' Type ')' .  (114)
+
+	.  reduce 114
+
+
+state 164
+	OrOrExpression : OrOrExpression OR_OR AndAndExpression .  (77)
+	AndAndExpression : AndAndExpression . AND_AND OrExpression  (79)
+
+	AND_AND  shift 116
+	OR_OR  reduce 77
+	']'  reduce 77
+	','  reduce 77
+	';'  reduce 77
+	')'  reduce 77
+	':'  reduce 77
+	'?'  reduce 77
+
+
+state 165
+	ConditionalExpression : OrOrExpression '?' Expression . ':' ConditionalExpression  (75)
+
+	':'  shift 188
+	.  error
+
+
+state 166
+	AndAndExpression : AndAndExpression AND_AND OrExpression .  (79)
+	OrExpression : OrExpression . '|' XorExpression  (81)
+
+	'|'  shift 117
+	AND_AND  reduce 79
+	OR_OR  reduce 79
+	']'  reduce 79
+	','  reduce 79
+	';'  reduce 79
+	')'  reduce 79
+	':'  reduce 79
+	'?'  reduce 79
+
+
+state 167
+	OrExpression : OrExpression '|' XorExpression .  (81)
+	XorExpression : XorExpression . '^' AndExpression  (83)
+
+	'^'  shift 118
+	AND_AND  reduce 81
+	OR_OR  reduce 81
+	']'  reduce 81
+	','  reduce 81
+	';'  reduce 81
+	')'  reduce 81
+	':'  reduce 81
+	'?'  reduce 81
+	'|'  reduce 81
+
+
+state 168
+	XorExpression : XorExpression '^' AndExpression .  (83)
+	AndExpression : AndExpression . '&' EqualNotEqual  (85)
+
+	'&'  shift 119
+	AND_AND  reduce 83
+	OR_OR  reduce 83
+	']'  reduce 83
+	','  reduce 83
+	';'  reduce 83
+	')'  reduce 83
+	':'  reduce 83
+	'?'  reduce 83
+	'|'  reduce 83
+	'^'  reduce 83
+
+
+state 169
+	AndExpression : AndExpression '&' EqualNotEqual .  (85)
+	EqualNotEqual : EqualNotEqual . EQ_EQ LtGtLteGte  (87)
+	EqualNotEqual : EqualNotEqual . NEQ LtGtLteGte  (88)
+
+	NEQ  shift 120
+	EQ_EQ  shift 121
+	AND_AND  reduce 85
+	OR_OR  reduce 85
+	']'  reduce 85
+	','  reduce 85
+	';'  reduce 85
+	')'  reduce 85
+	':'  reduce 85
+	'?'  reduce 85
+	'|'  reduce 85
+	'^'  reduce 85
+	'&'  reduce 85
+
+
+state 170
+	EqualNotEqual : EqualNotEqual NEQ LtGtLteGte .  (88)
+	LtGtLteGte : LtGtLteGte . '<' Shift  (90)
+	LtGtLteGte : LtGtLteGte . '>' Shift  (91)
+	LtGtLteGte : LtGtLteGte . LEQ Shift  (92)
+	LtGtLteGte : LtGtLteGte . GEQ Shift  (93)
+
+	LEQ  shift 122
+	GEQ  shift 123
+	'<'  shift 124
+	'>'  shift 125
+	AND_AND  reduce 88
+	OR_OR  reduce 88
+	NEQ  reduce 88
+	EQ_EQ  reduce 88
+	']'  reduce 88
+	','  reduce 88
+	';'  reduce 88
+	')'  reduce 88
+	':'  reduce 88
+	'?'  reduce 88
+	'|'  reduce 88
+	'^'  reduce 88
+	'&'  reduce 88
+
+
+state 171
+	EqualNotEqual : EqualNotEqual EQ_EQ LtGtLteGte .  (87)
+	LtGtLteGte : LtGtLteGte . '<' Shift  (90)
+	LtGtLteGte : LtGtLteGte . '>' Shift  (91)
+	LtGtLteGte : LtGtLteGte . LEQ Shift  (92)
+	LtGtLteGte : LtGtLteGte . GEQ Shift  (93)
+
+	LEQ  shift 122
+	GEQ  shift 123
+	'<'  shift 124
+	'>'  shift 125
+	AND_AND  reduce 87
+	OR_OR  reduce 87
+	NEQ  reduce 87
+	EQ_EQ  reduce 87
+	']'  reduce 87
+	','  reduce 87
+	';'  reduce 87
+	')'  reduce 87
+	':'  reduce 87
+	'?'  reduce 87
+	'|'  reduce 87
+	'^'  reduce 87
+	'&'  reduce 87
+
+
+state 172
+	LtGtLteGte : LtGtLteGte LEQ Shift .  (92)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	AND_AND  reduce 92
+	OR_OR  reduce 92
+	LEQ  reduce 92
+	GEQ  reduce 92
+	NEQ  reduce 92
+	EQ_EQ  reduce 92
+	']'  reduce 92
+	','  reduce 92
+	';'  reduce 92
+	')'  reduce 92
+	':'  reduce 92
+	'?'  reduce 92
+	'|'  reduce 92
+	'^'  reduce 92
+	'&'  reduce 92
+	'<'  reduce 92
+	'>'  reduce 92
+
+
+state 173
+	LtGtLteGte : LtGtLteGte GEQ Shift .  (93)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	AND_AND  reduce 93
+	OR_OR  reduce 93
+	LEQ  reduce 93
+	GEQ  reduce 93
+	NEQ  reduce 93
+	EQ_EQ  reduce 93
+	']'  reduce 93
+	','  reduce 93
+	';'  reduce 93
+	')'  reduce 93
+	':'  reduce 93
+	'?'  reduce 93
+	'|'  reduce 93
+	'^'  reduce 93
+	'&'  reduce 93
+	'<'  reduce 93
+	'>'  reduce 93
+
+
+state 174
+	LtGtLteGte : LtGtLteGte '<' Shift .  (90)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	AND_AND  reduce 90
+	OR_OR  reduce 90
+	LEQ  reduce 90
+	GEQ  reduce 90
+	NEQ  reduce 90
+	EQ_EQ  reduce 90
+	']'  reduce 90
+	','  reduce 90
+	';'  reduce 90
+	')'  reduce 90
+	':'  reduce 90
+	'?'  reduce 90
+	'|'  reduce 90
+	'^'  reduce 90
+	'&'  reduce 90
+	'<'  reduce 90
+	'>'  reduce 90
+
+
+state 175
+	LtGtLteGte : LtGtLteGte '>' Shift .  (91)
+	Shift : Shift . LSHIFT PlusMinus  (95)
+	Shift : Shift . RSHIFT PlusMinus  (96)
+	Shift : Shift . LOG_RSHIFT PlusMinus  (97)
+
+	LSHIFT  shift 85
+	RSHIFT  shift 86
+	LOG_RSHIFT  shift 87
+	AND_AND  reduce 91
+	OR_OR  reduce 91
+	LEQ  reduce 91
+	GEQ  reduce 91
+	NEQ  reduce 91
+	EQ_EQ  reduce 91
+	']'  reduce 91
+	','  reduce 91
+	';'  reduce 91
+	')'  reduce 91
+	':'  reduce 91
+	'?'  reduce 91
+	'|'  reduce 91
+	'^'  reduce 91
+	'&'  reduce 91
+	'<'  reduce 91
+	'>'  reduce 91
+
+
+state 176
+	Expression : MulDivMod AssignmentOperator Expression .  (73)
+
+	.  reduce 73
+
+
+state 177
+	BlockStatement : '{' . '}'  (42)
+	BlockStatement : '{' . StatementList '}'  (43)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 200
+	'('  shift 45
+	'}'  shift 201
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	StatementList  goto 203
+	Statement  goto 204
+	NonEmptyStatement  goto 205
+	NonEmptyStatementNoCaseNoDefault  goto 206
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	PrintStatement  goto 220
+
+
+state 178
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy ')' FunctionBody .  (36)
+
+	.  reduce 36
+
+
+state 179
+	FunctionBody : BlockStatement .  (41)
+
+	.  reduce 41
+
+
+state 180
+	Identifier : IdentifierWithoutDot .  (6)
+	Identifier : IdentifierWithoutDot . '.' Identifier  (7)
+
+	'.'  shift 221
+	','  reduce 6
+	')'  reduce 6
+
+
+state 181
+	VarDeclarationList : Type Identifier .  (49)
+	VarDeclarationList : Type Identifier . ',' VarDeclarationList  (50)
+
+	','  shift 222
+	')'  reduce 49
+
+
+state 182
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' . FunctionBody  (34)
+
+	'{'  shift 177
+	.  error
+
+	FunctionBody  goto 223
+	BlockStatement  goto 179
+
+
+state 183
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy ')' . FunctionBody  (37)
+
+	'{'  shift 177
+	.  error
+
+	FunctionBody  goto 224
+	BlockStatement  goto 179
+
+
+state 184
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy VarDeclarationList . ')' FunctionBody  (35)
+
+	')'  shift 225
+	.  error
+
+
+state 185
+	VarDeclarationsList : Type IdentifierWithoutDot ';' .  (47)
+	VarDeclarationsList : Type IdentifierWithoutDot ';' . VarDeclarationsList  (48)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	'}'  reduce 47
+
+	Type1  goto 16
+	Type  goto 104
+	VarDeclarationsList  goto 226
+
+
+state 186
+	StructDeclaration : STRUCT IDENTIFIER '{' StructScopeDummy VarDeclarationsList '}' ';' .  (45)
+
+	.  reduce 45
+
+
+state 187
+	ExpressionList : ExpressionList ',' Expression .  (132)
+
+	.  reduce 132
+
+
+state 188
+	ConditionalExpression : OrOrExpression '?' Expression ':' . ConditionalExpression  (75)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	ConditionalExpression  goto 227
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 53
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 189
+	LabeledStatement : IDENTIFIER . ':' Statement  (70)
+	MainExpression : IDENTIFIER . ArraySuffixes  (124)
+	MainExpression : IDENTIFIER . '(' ')'  (125)
+	MainExpression : IDENTIFIER . '(' ExpressionList ')'  (126)
+	MainExpression : IDENTIFIER . '.' MainExpression  (127)
+	Starting : IDENTIFIER .  (133)
+
+	'.'  shift 67
+	'['  shift 68
+	'('  shift 69
+	':'  shift 228
+	DIV_EQ  reduce 133
+	AND_EQ  reduce 133
+	AND_AND  reduce 133
+	OR_EQ  reduce 133
+	OR_OR  reduce 133
+	MIN_EQ  reduce 133
+	MIN_MIN  reduce 133
+	PLUS_EQ  reduce 133
+	PLUS_PLUS  reduce 133
+	LEQ  reduce 133
+	LSHIFT  reduce 133
+	LSHIFT_EQ  reduce 133
+	GEQ  reduce 133
+	RSHIFT_EQ  reduce 133
+	LOG_RSHIFT_EQ  reduce 133
+	RSHIFT  reduce 133
+	LOG_RSHIFT  reduce 133
+	NEQ  reduce 133
+	EQ_EQ  reduce 133
+	MULT_EQ  reduce 133
+	MOD_EQ  reduce 133
+	XOR_EQ  reduce 133
+	POW_EQ  reduce 133
+	INV_EQ  reduce 133
+	'*'  reduce 133
+	'='  reduce 133
+	';'  reduce 133
+	'?'  reduce 133
+	'|'  reduce 133
+	'^'  reduce 133
+	'&'  reduce 133
+	'<'  reduce 133
+	'>'  reduce 133
+	'+'  reduce 133
+	'-'  reduce 133
+	'/'  reduce 133
+	'%'  reduce 133
+
+	ArraySuffix  goto 70
+	ArraySuffixes  goto 71
+
+
+state 190
+	PrintStatement : WRITELN . '(' Expression ')'  (69)
+
+	'('  shift 229
+	.  error
+
+
+state 191
+	BreakStatement : BREAK . ';'  (169)
+
+	';'  shift 230
+	.  error
+
+
+state 192
+	ContinueStatement : CONTINUE . ';'  (168)
+
+	';'  shift 231
+	.  error
+
+
+state 193
+	DoStatement : DO . DoScopeDummy BlockStatement WHILE '(' Expression ')' ';'  (163)
+	DoScopeDummy : .  (161)
+
+	.  reduce 161
+
+	DoScopeDummy  goto 232
+
+
+state 194
+	ForStatement : FOR . '(' ForScopeDummy Initialize Initialize ')' BlockStatement  (164)
+	ForStatement : FOR . '(' ForScopeDummy Initialize Initialize Expression ')' BlockStatement  (165)
+
+	'('  shift 233
+	.  error
+
+
+state 195
+	GotoStatement : GOTO . IDENTIFIER ';'  (172)
+
+	IDENTIFIER  shift 234
+	.  error
+
+
+state 196
+	IfStatement : IF . '(' Expression ')' IfScopeDummy1 BlockStatement  (156)
+	IfStatement : IF . '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+
+	'('  shift 235
+	.  error
+
+
+state 197
+	ReturnStatement : RETURN . Expression ';'  (170)
+	ReturnStatement : RETURN . ';'  (171)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	';'  shift 236
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 237
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 198
+	SwitchStatement : SWITCH . SwitchDummy '(' Expression ')' '{' CaseDefaultStatement '}'  (173)
+	SwitchDummy : .  (181)
+
+	.  reduce 181
+
+	SwitchDummy  goto 238
+
+
+state 199
+	WhileStatement : WHILE . '(' WhileScopeDummy Expression ')' BlockStatement  (159)
+
+	'('  shift 239
+	.  error
+
+
+state 200
+	Statement : ';' .  (53)
+
+	.  reduce 53
+
+
+state 201
+	BlockStatement : '{' '}' .  (42)
+
+	.  reduce 42
+
+
+state 202
+	DeclarationStatement : Declaration .  (155)
+
+	.  reduce 155
+
+
+state 203
+	BlockStatement : '{' StatementList . '}'  (43)
+
+	'}'  shift 240
+	.  error
+
+
+state 204
+	StatementList : Statement .  (51)
+	StatementList : Statement . StatementList  (52)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 200
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	'}'  reduce 51
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	StatementList  goto 241
+	Statement  goto 204
+	NonEmptyStatement  goto 205
+	NonEmptyStatementNoCaseNoDefault  goto 206
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	PrintStatement  goto 220
+
+
+state 205
+	Statement : NonEmptyStatement .  (54)
+
+	.  reduce 54
+
+
+state 206
+	NonEmptyStatement : NonEmptyStatementNoCaseNoDefault .  (55)
+
+	.  reduce 55
+
+
+state 207
+	NonEmptyStatementNoCaseNoDefault : LabeledStatement .  (56)
+
+	.  reduce 56
+
+
+state 208
+	NonEmptyStatementNoCaseNoDefault : ExpressionStatement .  (57)
+
+	.  reduce 57
+
+
+state 209
+	ExpressionStatement : Expression . ';'  (71)
+
+	';'  shift 242
+	.  error
+
+
+state 210
+	NonEmptyStatementNoCaseNoDefault : DeclarationStatement .  (58)
+
+	.  reduce 58
+
+
+state 211
+	NonEmptyStatementNoCaseNoDefault : IfStatement .  (59)
+
+	.  reduce 59
+
+
+state 212
+	NonEmptyStatementNoCaseNoDefault : WhileStatement .  (60)
+
+	.  reduce 60
+
+
+state 213
+	NonEmptyStatementNoCaseNoDefault : DoStatement .  (61)
+
+	.  reduce 61
+
+
+state 214
+	NonEmptyStatementNoCaseNoDefault : ForStatement .  (62)
+
+	.  reduce 62
+
+
+state 215
+	NonEmptyStatementNoCaseNoDefault : SwitchStatement .  (63)
+
+	.  reduce 63
+
+
+state 216
+	NonEmptyStatementNoCaseNoDefault : ContinueStatement .  (64)
+
+	.  reduce 64
+
+
+state 217
+	NonEmptyStatementNoCaseNoDefault : BreakStatement .  (65)
+
+	.  reduce 65
+
+
+state 218
+	NonEmptyStatementNoCaseNoDefault : ReturnStatement .  (66)
+
+	.  reduce 66
+
+
+state 219
+	NonEmptyStatementNoCaseNoDefault : GotoStatement .  (67)
+
+	.  reduce 67
+
+
+state 220
+	NonEmptyStatementNoCaseNoDefault : PrintStatement .  (68)
+
+	.  reduce 68
+
+
+state 221
+	Identifier : IdentifierWithoutDot '.' . Identifier  (7)
+
+	IDENTIFIER  shift 101
+	'*'  shift 102
+	.  error
+
+	IdentifierWithoutDot  goto 180
+	Identifier  goto 243
+
+
+state 222
+	VarDeclarationList : Type Identifier ',' . VarDeclarationList  (50)
+
+	BOOL  shift 1
+	BYTE  shift 2
+	CHAR  shift 3
+	DOUBLE  shift 4
+	FLOAT  shift 5
+	INT  shift 6
+	LONG  shift 7
+	SHORT  shift 8
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	.  error
+
+	Type1  goto 16
+	Type  goto 154
+	VarDeclarationList  goto 244
+
+
+state 223
+	FuncDeclaration : Type IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody .  (34)
+
+	.  reduce 34
+
+
+state 224
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy ')' FunctionBody .  (37)
+
+	.  reduce 37
+
+
+state 225
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' . FunctionBody  (35)
+
+	'{'  shift 177
+	.  error
+
+	FunctionBody  goto 245
+	BlockStatement  goto 179
+
+
+state 226
+	VarDeclarationsList : Type IdentifierWithoutDot ';' VarDeclarationsList .  (48)
+
+	.  reduce 48
+
+
+state 227
+	ConditionalExpression : OrOrExpression '?' Expression ':' ConditionalExpression .  (75)
+
+	.  reduce 75
+
+
+state 228
+	LabeledStatement : IDENTIFIER ':' . Statement  (70)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 200
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	Statement  goto 246
+	NonEmptyStatement  goto 205
+	NonEmptyStatementNoCaseNoDefault  goto 206
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	PrintStatement  goto 220
+
+
+state 229
+	PrintStatement : WRITELN '(' . Expression ')'  (69)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 247
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 230
+	BreakStatement : BREAK ';' .  (169)
+
+	.  reduce 169
+
+
+state 231
+	ContinueStatement : CONTINUE ';' .  (168)
+
+	.  reduce 168
+
+
+state 232
+	DoStatement : DO DoScopeDummy . BlockStatement WHILE '(' Expression ')' ';'  (163)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 248
+
+
+state 233
+	ForStatement : FOR '(' . ForScopeDummy Initialize Initialize ')' BlockStatement  (164)
+	ForStatement : FOR '(' . ForScopeDummy Initialize Initialize Expression ')' BlockStatement  (165)
+	ForScopeDummy : .  (162)
+
+	.  reduce 162
+
+	ForScopeDummy  goto 249
+
+
+state 234
+	GotoStatement : GOTO IDENTIFIER . ';'  (172)
+
+	';'  shift 250
+	.  error
+
+
+state 235
+	IfStatement : IF '(' . Expression ')' IfScopeDummy1 BlockStatement  (156)
+	IfStatement : IF '(' . Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 251
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 236
+	ReturnStatement : RETURN ';' .  (171)
+
+	.  reduce 171
+
+
+state 237
+	ReturnStatement : RETURN Expression . ';'  (170)
+
+	';'  shift 252
+	.  error
+
+
+state 238
+	SwitchStatement : SWITCH SwitchDummy . '(' Expression ')' '{' CaseDefaultStatement '}'  (173)
+
+	'('  shift 253
+	.  error
+
+
+state 239
+	WhileStatement : WHILE '(' . WhileScopeDummy Expression ')' BlockStatement  (159)
+	WhileScopeDummy : .  (160)
+
+	.  reduce 160
+
+	WhileScopeDummy  goto 254
+
+
+state 240
+	BlockStatement : '{' StatementList '}' .  (43)
+
+	.  reduce 43
+
+
+state 241
+	StatementList : Statement StatementList .  (52)
+
+	.  reduce 52
+
+
+state 242
+	ExpressionStatement : Expression ';' .  (71)
+
+	.  reduce 71
+
+
+state 243
+	Identifier : IdentifierWithoutDot '.' Identifier .  (7)
+
+	.  reduce 7
+
+
+state 244
+	VarDeclarationList : Type Identifier ',' VarDeclarationList .  (50)
+
+	.  reduce 50
+
+
+state 245
+	FuncDeclaration : Type '*' IDENTIFIER '(' FuncScopeDummy VarDeclarationList ')' FunctionBody .  (35)
+
+	.  reduce 35
+
+
+state 246
+	LabeledStatement : IDENTIFIER ':' Statement .  (70)
+
+	.  reduce 70
+
+
+state 247
+	PrintStatement : WRITELN '(' Expression . ')'  (69)
+
+	')'  shift 255
+	.  error
+
+
+state 248
+	DoStatement : DO DoScopeDummy BlockStatement . WHILE '(' Expression ')' ';'  (163)
+
+	WHILE  shift 256
+	.  error
+
+
+state 249
+	ForStatement : FOR '(' ForScopeDummy . Initialize Initialize ')' BlockStatement  (164)
+	ForStatement : FOR '(' ForScopeDummy . Initialize Initialize Expression ')' BlockStatement  (165)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	';'  shift 257
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	ExpressionStatement  goto 258
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	Initialize  goto 259
+
+
+state 250
+	GotoStatement : GOTO IDENTIFIER ';' .  (172)
+
+	.  reduce 172
+
+
+state 251
+	IfStatement : IF '(' Expression . ')' IfScopeDummy1 BlockStatement  (156)
+	IfStatement : IF '(' Expression . ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+
+	')'  shift 260
+	.  error
+
+
+state 252
+	ReturnStatement : RETURN Expression ';' .  (170)
+
+	.  reduce 170
+
+
+state 253
+	SwitchStatement : SWITCH SwitchDummy '(' . Expression ')' '{' CaseDefaultStatement '}'  (173)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 261
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 254
+	WhileStatement : WHILE '(' WhileScopeDummy . Expression ')' BlockStatement  (159)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 262
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 255
+	PrintStatement : WRITELN '(' Expression ')' .  (69)
+
+	.  reduce 69
+
+
+state 256
+	DoStatement : DO DoScopeDummy BlockStatement WHILE . '(' Expression ')' ';'  (163)
+
+	'('  shift 263
+	.  error
+
+
+state 257
+	Initialize : ';' .  (166)
+
+	.  reduce 166
+
+
+state 258
+	Initialize : ExpressionStatement .  (167)
+
+	.  reduce 167
+
+
+state 259
+	ForStatement : FOR '(' ForScopeDummy Initialize . Initialize ')' BlockStatement  (164)
+	ForStatement : FOR '(' ForScopeDummy Initialize . Initialize Expression ')' BlockStatement  (165)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	';'  shift 257
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	ExpressionStatement  goto 258
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	Initialize  goto 264
+
+
+state 260
+	IfStatement : IF '(' Expression ')' . IfScopeDummy1 BlockStatement  (156)
+	IfStatement : IF '(' Expression ')' . IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+	IfScopeDummy1 : .  (39)
+
+	.  reduce 39
+
+	IfScopeDummy1  goto 265
+
+
+state 261
+	SwitchStatement : SWITCH SwitchDummy '(' Expression . ')' '{' CaseDefaultStatement '}'  (173)
+
+	')'  shift 266
+	.  error
+
+
+state 262
+	WhileStatement : WHILE '(' WhileScopeDummy Expression . ')' BlockStatement  (159)
+
+	')'  shift 267
+	.  error
+
+
+state 263
+	DoStatement : DO DoScopeDummy BlockStatement WHILE '(' . Expression ')' ';'  (163)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 268
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 264
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize . ')' BlockStatement  (164)
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize . Expression ')' BlockStatement  (165)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 38
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	FALSE  shift 41
+	SIZEOF  shift 42
+	TRUE  shift 43
+	'*'  shift 44
+	'('  shift 45
+	')'  shift 269
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Expression  goto 270
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+
+
+state 265
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 . BlockStatement  (156)
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 . BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 271
+
+
+state 266
+	SwitchStatement : SWITCH SwitchDummy '(' Expression ')' . '{' CaseDefaultStatement '}'  (173)
+
+	'{'  shift 272
+	.  error
+
+
+state 267
+	WhileStatement : WHILE '(' WhileScopeDummy Expression ')' . BlockStatement  (159)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 273
+
+
+state 268
+	DoStatement : DO DoScopeDummy BlockStatement WHILE '(' Expression . ')' ';'  (163)
+
+	')'  shift 274
+	.  error
+
+
+state 269
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize ')' . BlockStatement  (164)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 275
+
+
+state 270
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize Expression . ')' BlockStatement  (165)
+
+	')'  shift 276
+	.  error
+
+
+state 271
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement .  (156)
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement . IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement  (157)
+	IfEndScopeDummy : .  (158)
+
+	INT_LIT  reduce 156
+	FLOAT_LIT  reduce 156
+	CHAR_LIT  reduce 156
+	STRING_LIT  reduce 156
+	IDENTIFIER  reduce 156
+	WRITELN  reduce 156
+	MIN_MIN  reduce 156
+	PLUS_PLUS  reduce 156
+	BOOL  reduce 156
+	BREAK  reduce 156
+	BYTE  reduce 156
+	CASE  reduce 156
+	CHAR  reduce 156
+	CONTINUE  reduce 156
+	DEFAULT  reduce 156
+	DO  reduce 156
+	DOUBLE  reduce 156
+	ELSE  reduce 158
+	FALSE  reduce 156
+	FLOAT  reduce 156
+	FOR  reduce 156
+	GOTO  reduce 156
+	IF  reduce 156
+	INT  reduce 156
+	LONG  reduce 156
+	RETURN  reduce 156
+	SHORT  reduce 156
+	SIZEOF  reduce 156
+	STRUCT  reduce 156
+	SWITCH  reduce 156
+	TRUE  reduce 156
+	UBYTE  reduce 156
+	UINT  reduce 156
+	ULONG  reduce 156
+	USHORT  reduce 156
+	VOID  reduce 156
+	WHILE  reduce 156
+	'*'  reduce 156
+	';'  reduce 156
+	'('  reduce 156
+	'{'  reduce 156
+	'}'  reduce 156
+	'&'  reduce 156
+	'+'  reduce 156
+	'-'  reduce 156
+	'!'  reduce 156
+	'~'  reduce 156
+
+	IfEndScopeDummy  goto 277
+
+
+state 272
+	SwitchStatement : SWITCH SwitchDummy '(' Expression ')' '{' . CaseDefaultStatement '}'  (173)
+
+	CASE  shift 278
+	DEFAULT  shift 279
+	.  error
+
+	CaseStatement  goto 280
+	DefaultStatement  goto 281
+	CaseDefaultStatement  goto 282
+
+
+state 273
+	WhileStatement : WHILE '(' WhileScopeDummy Expression ')' BlockStatement .  (159)
+
+	.  reduce 159
+
+
+state 274
+	DoStatement : DO DoScopeDummy BlockStatement WHILE '(' Expression ')' . ';'  (163)
+
+	';'  shift 283
+	.  error
+
+
+state 275
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize ')' BlockStatement .  (164)
+
+	.  reduce 164
+
+
+state 276
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize Expression ')' . BlockStatement  (165)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 284
+
+
+state 277
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy . ELSE IfScopeDummy2 BlockStatement  (157)
+
+	ELSE  shift 285
+	.  error
+
+
+state 278
+	CaseStatement : CASE . Starting ':' CaseStatementDummy StatementListNoCaseNoDefault  (178)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 286
+	FALSE  shift 41
+	TRUE  shift 43
+	'('  shift 45
+	.  error
+
+	Starting  goto 287
+
+
+state 279
+	DefaultStatement : DEFAULT . ':' CaseStatementDummy StatementListNoCaseNoDefault  (179)
+
+	':'  shift 288
+	.  error
+
+
+state 280
+	CaseDefaultStatement : CaseStatement .  (174)
+	CaseDefaultStatement : CaseStatement . CaseDefaultStatement  (176)
+
+	CASE  shift 278
+	DEFAULT  shift 279
+	'}'  reduce 174
+
+	CaseStatement  goto 280
+	DefaultStatement  goto 281
+	CaseDefaultStatement  goto 289
+
+
+state 281
+	CaseDefaultStatement : DefaultStatement .  (175)
+	CaseDefaultStatement : DefaultStatement . CaseDefaultStatement  (177)
+
+	CASE  shift 278
+	DEFAULT  shift 279
+	'}'  reduce 175
+
+	CaseStatement  goto 280
+	DefaultStatement  goto 281
+	CaseDefaultStatement  goto 290
+
+
+state 282
+	SwitchStatement : SWITCH SwitchDummy '(' Expression ')' '{' CaseDefaultStatement . '}'  (173)
+
+	'}'  shift 291
+	.  error
+
+
+state 283
+	DoStatement : DO DoScopeDummy BlockStatement WHILE '(' Expression ')' ';' .  (163)
+
+	.  reduce 163
+
+
+state 284
+	ForStatement : FOR '(' ForScopeDummy Initialize Initialize Expression ')' BlockStatement .  (165)
+
+	.  reduce 165
+
+
+state 285
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE . IfScopeDummy2 BlockStatement  (157)
+	IfScopeDummy2 : .  (40)
+
+	.  reduce 40
+
+	IfScopeDummy2  goto 292
+
+
+state 286
+	Starting : IDENTIFIER .  (133)
+
+	.  reduce 133
+
+
+state 287
+	CaseStatement : CASE Starting . ':' CaseStatementDummy StatementListNoCaseNoDefault  (178)
+
+	':'  shift 293
+	.  error
+
+
+state 288
+	DefaultStatement : DEFAULT ':' . CaseStatementDummy StatementListNoCaseNoDefault  (179)
+	CaseStatementDummy : .  (180)
+
+	.  reduce 180
+
+	CaseStatementDummy  goto 294
+
+
+state 289
+	CaseDefaultStatement : CaseStatement CaseDefaultStatement .  (176)
+
+	.  reduce 176
+
+
+state 290
+	CaseDefaultStatement : DefaultStatement CaseDefaultStatement .  (177)
+
+	.  reduce 177
+
+
+state 291
+	SwitchStatement : SWITCH SwitchDummy '(' Expression ')' '{' CaseDefaultStatement '}' .  (173)
+
+	.  reduce 173
+
+
+state 292
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 . BlockStatement  (157)
+
+	'{'  shift 177
+	.  error
+
+	BlockStatement  goto 295
+
+
+state 293
+	CaseStatement : CASE Starting ':' . CaseStatementDummy StatementListNoCaseNoDefault  (178)
+	CaseStatementDummy : .  (180)
+
+	.  reduce 180
+
+	CaseStatementDummy  goto 296
+
+
+state 294
+	DefaultStatement : DEFAULT ':' CaseStatementDummy . StatementListNoCaseNoDefault  (179)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 297
+	'('  shift 45
+	'{'  shift 177
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	BlockStatement  goto 298
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	NonEmptyStatementNoCaseNoDefault  goto 299
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	StatementNoCaseNoDefault  goto 300
+	StatementListNoCaseNoDefault  goto 301
+	PrintStatement  goto 220
+
+
+state 295
+	IfStatement : IF '(' Expression ')' IfScopeDummy1 BlockStatement IfEndScopeDummy ELSE IfScopeDummy2 BlockStatement .  (157)
+
+	.  reduce 157
+
+
+state 296
+	CaseStatement : CASE Starting ':' CaseStatementDummy . StatementListNoCaseNoDefault  (178)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 297
+	'('  shift 45
+	'{'  shift 177
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	.  error
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	BlockStatement  goto 298
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	NonEmptyStatementNoCaseNoDefault  goto 299
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	StatementNoCaseNoDefault  goto 300
+	StatementListNoCaseNoDefault  goto 302
+	PrintStatement  goto 220
+
+
+state 297
+	StatementNoCaseNoDefault : ';' .  (184)
+
+	.  reduce 184
+
+
+state 298
+	StatementNoCaseNoDefault : BlockStatement .  (186)
+
+	.  reduce 186
+
+
+state 299
+	StatementNoCaseNoDefault : NonEmptyStatementNoCaseNoDefault .  (185)
+
+	.  reduce 185
+
+
+state 300
+	StatementListNoCaseNoDefault : StatementNoCaseNoDefault .  (182)
+	StatementListNoCaseNoDefault : StatementNoCaseNoDefault . StatementListNoCaseNoDefault  (183)
+
+	INT_LIT  shift 34
+	FLOAT_LIT  shift 35
+	CHAR_LIT  shift 36
+	STRING_LIT  shift 37
+	IDENTIFIER  shift 189
+	WRITELN  shift 190
+	MIN_MIN  shift 39
+	PLUS_PLUS  shift 40
+	BOOL  shift 1
+	BREAK  shift 191
+	BYTE  shift 2
+	CHAR  shift 3
+	CONTINUE  shift 192
+	DO  shift 193
+	DOUBLE  shift 4
+	FALSE  shift 41
+	FLOAT  shift 5
+	FOR  shift 194
+	GOTO  shift 195
+	IF  shift 196
+	INT  shift 6
+	LONG  shift 7
+	RETURN  shift 197
+	SHORT  shift 8
+	SIZEOF  shift 42
+	STRUCT  shift 9
+	SWITCH  shift 198
+	TRUE  shift 43
+	UBYTE  shift 10
+	UINT  shift 11
+	ULONG  shift 12
+	USHORT  shift 13
+	VOID  shift 14
+	WHILE  shift 199
+	'*'  shift 44
+	';'  shift 297
+	'('  shift 45
+	'{'  shift 177
+	'&'  shift 46
+	'+'  shift 47
+	'-'  shift 48
+	'!'  shift 49
+	'~'  shift 50
+	CASE  reduce 182
+	DEFAULT  reduce 182
+	'}'  reduce 182
+
+	Type1  goto 16
+	Type  goto 17
+	Declaration  goto 202
+	VarDeclarations  goto 19
+	FuncDeclaration  goto 20
+	BlockStatement  goto 298
+	AggregateDeclaration  goto 21
+	StructDeclaration  goto 22
+	NonEmptyStatementNoCaseNoDefault  goto 299
+	LabeledStatement  goto 207
+	ExpressionStatement  goto 208
+	Expression  goto 209
+	ConditionalExpression  goto 75
+	OrOrExpression  goto 76
+	AndAndExpression  goto 77
+	OrExpression  goto 78
+	XorExpression  goto 79
+	AndExpression  goto 80
+	EqualNotEqual  goto 81
+	LtGtLteGte  goto 82
+	Shift  goto 83
+	PlusMinus  goto 52
+	MulDivMod  goto 84
+	UnaryExpression  goto 54
+	PointerExpression  goto 55
+	UnaryOperator  goto 56
+	MainExpression  goto 57
+	Starting  goto 58
+	DeclarationStatement  goto 210
+	IfStatement  goto 211
+	WhileStatement  goto 212
+	DoStatement  goto 213
+	ForStatement  goto 214
+	SwitchStatement  goto 215
+	ContinueStatement  goto 216
+	BreakStatement  goto 217
+	ReturnStatement  goto 218
+	GotoStatement  goto 219
+	StatementNoCaseNoDefault  goto 300
+	StatementListNoCaseNoDefault  goto 303
+	PrintStatement  goto 220
+
+
+state 301
+	DefaultStatement : DEFAULT ':' CaseStatementDummy StatementListNoCaseNoDefault .  (179)
+
+	.  reduce 179
+
+
+state 302
+	CaseStatement : CASE Starting ':' CaseStatementDummy StatementListNoCaseNoDefault .  (178)
+
+	.  reduce 178
+
+
+state 303
+	StatementListNoCaseNoDefault : StatementNoCaseNoDefault StatementListNoCaseNoDefault .  (183)
+
+	.  reduce 183
+
+
+119 terminals, 72 nonterminals
+187 grammar rules, 304 states

@@ -1,0 +1,28 @@
+******************Compiler Project*****************
+
+Group members:
+
+Atri Bhattacharyya	11171
+Prateek Sahu		11528
+Sai Krishna			11620
+
+*****************Build instructions*****************
+cd /PATH_TO_ASSIGNMENT_FOLDER/assgn3
+make
+
+The makefile cantains commands to build the lexer and 
+then parser in correct order.
+Binaries will be created in the /bin folder
+
+Lexer code    	:	lex dlex.l
+Yacc code     	:	yacc -d -v dyac3.y
+Yacc C file	  	:	gcc -c y.tab.c
+Lexer C file  	:	gcc -c lex.yy.c 
+Definitions file:	gcc -c definition.c
+Running Binary	:	gcc -o parser y.tab.o lex.yy.o definition.o
+
+Test cases are there in the /test folder
+You can run
+bin/parser test/test1.d
+to run the lexer on the testfile
+
